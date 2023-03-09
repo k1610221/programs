@@ -1,0 +1,15 @@
+#!/bin/bash
+
+url='https://www.city.chofu.tokyo.jp/www/contents/1646875289947/simple/text20222.txt' # R4
+#url='https://www.city.chofu.tokyo.jp/www/contents/1671409242843/simple/tekisut3.txt' # R5
+
+now=$(date +%p)
+if [ $now = PM ]; then
+    target_m=$(date -d '+1 day' +%_m)
+    target_d=$(date -d '+1 day' +%_d)
+else
+    target_m=$(date +%_m)
+    target_d=$(date +%_d)
+fi
+
+curl -s $url | awk 'BEGIN{RS="\r\n\r\n"}/'"${target_m# }月"'/{print}' | grep "^${target_d# }日" | sed 's/\t/, /;s/　/, /'
