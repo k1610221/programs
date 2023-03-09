@@ -1,0 +1,44 @@
+#!/bin/bash
+pic_height=11
+pic_width=18
+move_u="\033["$pic_height"A"
+move_r="\033["$(($pic_width + 3))"C"
+color0="\e[0m"
+color1="\e[33m"
+
+title=${color1}${USER}@`cat /etc/hostname`${color0}
+count=$(wc -c <<< ${USER}@`cat /etc/hostname`)
+for i in `seq 2 ${count}`; do line=$line'='; done; echo
+line=${color1}${line}${color0}
+os="${color1}OS:${color0} `sed -n 's/^NAME=//p' /etc/os-release | sed 's/"//g'` `uname -m`"
+kernel="${color1}Kernel:${color0} `uname -r`"
+uptime="${color1}Uptime:${color0} `uptime -p | sed 's/up //'`"
+packages="${color1}Packages:${color0} `pacman -Q | wc -l`"
+shell="${color1}Shell:${color0} `basename $SHELL` `$SHELL --version | grep -Eo '[0-9]+(\.[0-9]+)+'`"
+cpu="${color1}CPU:${color0} `lscpu | sed -n 's/Model name: //p'`"
+memory="${color1}Memory:${color0} `free -h | awk '/^Mem:/{print $3 "B / " $2 "B"}'`"
+disk="${color1}Disk:${color0} `df | awk '/^\/dev\//{used+=$3;partitioned+=$2}END{printf "%.2fGiB / %.2fGiB\n", used/1024/1024, partitioned/1024/1024}'`"
+palette='\e[40m   \e[41m   \e[42m   \e[43m   \e[44m   \e[45m   \e[46m   \e[47m   \e[0m'
+
+catimg -H $(($pic_height * 2)) $HOME/Workspace/myfetch/tux.png
+echo -e ${move_u}${move_r}${title}
+echo -e ${move_r}${line}
+echo -e ${move_r}${os}
+echo -e ${move_r}${kernel}
+echo -e ${move_r}${uptime}
+echo -e ${move_r}${packages}
+echo -e ${move_r}${shell}
+echo -e ${move_r}${cpu}
+echo -e ${move_r}${memory}
+echo -e ${move_r}${disk}
+printf '%b\n\n' "${move_r}${palette}"
+
+# Future Work
+# echo Window Manager: `pacman -Q i3-wm`
+# echo Status Bar: `pacman -Q i3blocks`
+# echo Launcher: `pacman -Q rofi`
+# echo Terminal: `pacman -Q terminator` # terminator --version
+# echo Terminal Font: `sed -n 's/ \+font = //p' $HOME/.config/terminator/config`
+# echo Input Method:
+# echo GPU: 
+# echo Resolution: 
