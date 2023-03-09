@@ -1,0 +1,15 @@
+#!/bin/bash
+
+rx_0=$(cat /sys/class/net/wlp4s0/statistics/rx_bytes)
+tx_0=$(cat /sys/class/net/wlp4s0/statistics/tx_bytes)
+
+sleep 1
+
+rx_1=$(cat /sys/class/net/wlp4s0/statistics/rx_bytes)
+tx_1=$(cat /sys/class/net/wlp4s0/statistics/tx_bytes)
+
+rx_rate=$(numfmt --to=si --suffix=bps $(($((rx_1-rx_0))*8)))
+tx_rate=$(numfmt --to=si --suffix=bps $(($((tx_1-tx_0))*8)))
+
+echo $rx_rate"/"$tx_rate
+
