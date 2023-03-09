@@ -1,0 +1,10 @@
+#!/bin/bash
+
+channel_info=$(twitch api get search/channels -q query=sooflower | jq '.data[]|select(.id == "419795496")')
+
+is_live=$(jq '.is_live' <<< $channel_info)
+title=$(jq '.title' <<< $channel_info)
+
+if [ $is_live = true ];then
+    echo "수련 ON AIR $title"
+fi
