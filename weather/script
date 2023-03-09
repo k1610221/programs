@@ -1,0 +1,16 @@
+#!/bin/bash
+
+info=$(curl -s https://weathernews.jp/onebox/tenki/tokyo/13208/ | pup -i 0 '.weather-now__ul' | sed '/<img/d;/ul/d;/li/d;/span/d;')
+
+trans='s/晴れ/☀️/;'
+trans+='s/うすぐもり/🌤️/;'
+trans+='s/雪/❄/;'
+trans+='s/みぞれ/❄/;'
+trans+='s/小雨/🌧/;'
+trans+='s/雨/🌧/;'
+trans+='s/くもり/☁/;'
+
+status=$(sed -n 2p <<< $info | sed $trans)
+temper=$(sed -n 4p <<< $info)
+
+echo $status $temper
